@@ -4,6 +4,8 @@ const URI = require("urijs");
 const Promise = require('bluebird');
 require("bluebird-co");
 
+const interfacer = require('./../../util/interfacer');
+
 const getListByTitle = (function () {
     let exec = Promise.coroutine(function* (ctx, title, options) {
         const self = this;
@@ -20,6 +22,7 @@ const getListByTitle = (function () {
         }
 
         this.log(result.body.d);
+        return result.body.d;
     });
 
     return {
@@ -36,8 +39,13 @@ module.exports = function (vorpal, context) {
     vorpal
         .command('Get-SPOListByTitle <title>')
         .action(function (args, callback) {
-            args.options = args.options || {};
-
-            return getListByTitle.exec.call(this, vorpal.spContext, args.title, args.options).then(callback);
+            interfacer.call(this, {
+                command: getListByTitle,
+                spContext: vorpal.spContext,
+                args: args.title || "",
+                options: args.options || {},
+                async: true,
+                callback
+            });
         });
 };

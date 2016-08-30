@@ -1,29 +1,34 @@
 'use strict';
 
-const util = require("util");
 const URI = require("urijs");
 const Promise = require('bluebird');
 require("bluebird-co");
 
+const interfacer = require('./../util/interfacer');
+
 const curl = (function () {
     let exec = Promise.coroutine(function* (ctx, url, options) {
-        const self = this;
-        options = options || {};
+        options.Method = options.Method || "GET";
 
-        //TODO: add options
         let opts = {
-            method: "GET",
+            method: options.Method,
             url: URI.joinPaths(url).href()
         };
 
         let result = yield ctx.requestAsync(opts);
 
-         if (result.body.error) {
+        if (!result.body) {
+            this.dir(result);
+            return;
+        }
+
+        if (result.body.error) {
             this.log(result.body.error.message.value);
             return;
         }
 
-        this.log(util.inspect(result.body, false, null));
+        this.dir(result.body);
+        return result.body;
     });
 
     return {
@@ -38,14 +43,21 @@ module.exports = function (vorpal, context) {
     vorpal.api.curl = curl;
     vorpal
         .command('curl [url]', "Execute direct requests using the current SPO session")
-        .validate(function(args) {
+        .option("-m, --Method <method>", "Specifies the HTTP Verb to use. Default is 'GET'")
+        .validate(function (args) {
             if (!args.url) {
                 return "A url must be specified.";
             }
             return;
         })
         .action(function (args, callback) {
-            args.options = args.options || {};
-            return curl.exec.call(this, vorpal.spContext, args.url, args.options).then(callback);
+            interfacer.call(this, {
+                command: curl,
+                spContext: vorpal.spContext,
+                args: args.url || "",
+                options: args.options || {},
+                async: true,
+                callback
+            });
         });
 };

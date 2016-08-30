@@ -4,11 +4,10 @@ const URI = require("urijs");
 const Promise = require('bluebird');
 require("bluebird-co");
 
+const interfacer = require('./../../util/interfacer');
+
 const getSite = (function () {
     let exec = Promise.coroutine(function* (ctx, siteRelativeUrl, options) {
-        const self = this;
-        options = options || {};
-
         let opts = {
             method: "GET",
             url: URI.joinPaths('/_api/site').href(),
@@ -24,13 +23,15 @@ const getSite = (function () {
         let result = yield ctx.requestAsync(opts);
 
         if (result.statusCode === 404) {
-            return "A site at the specified url could not be found.";
+            this.log("A site at the specified url could not be found.");
         }
 
          if (result.body.error) {
-            return result.body.error.message.value;
+            this.log(result.body.error.message.value);
+            return;
         }
 
+        this.dir(result.body.d);
         return result.body.d;
     });
 
@@ -47,7 +48,13 @@ module.exports = function (vorpal, context) {
     vorpal
         .command('Get-SPOSite [siteRelativeUrl]')
         .action(function (args, callback) {
-            args.options = args.options || {};
-            return getSite.exec(vorpal.spContext, args.siteRelativeUrl, args.options).then(callback);
+            interfacer.call(this, {
+                command: getSite,
+                spContext: vorpal.spContext,
+                args: args.siteRelativeUrl || "",
+                options: args.options || {},
+                async: true,
+                callback
+            });
         });
 };

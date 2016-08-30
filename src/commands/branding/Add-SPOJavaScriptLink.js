@@ -6,6 +6,8 @@ const Promise = require('bluebird');
 require("bluebird-co");
 const _ = require("lodash");
 
+const interfacer = require('./../../util/interfacer');
+
 const addJavaScriptLink = (function () {
     let exec = Promise.coroutine(function* (ctx, options) {
         const self = this;
@@ -92,7 +94,12 @@ module.exports = function (vorpal, context) {
             return true;
         })
         .action(function (args, callback) {
-            args.options = args.options || {};
-            return addJavaScriptLink.execCommand.call(this, vorpal.spContext, args.options).then(callback);
+            interfacer.call(this, {
+                command: addJavaScriptLink,
+                spContext: vorpal.spContext,
+                options: args.options || {},
+                async: true,
+                callback
+            });
         });
 };

@@ -5,6 +5,7 @@ const Promise = require('bluebird');
 require("bluebird-co");
 
 const chalk = require("chalk");
+const _ = require("lodash");
 const spo = require("@beyond-sharepoint/spo-remote-auth");
 
 //ALL the configuration!
@@ -17,6 +18,12 @@ const app = (function () {
   let _commands = [];
   let _importedCommands = [];
   let vorpal = new Vorpal();
+
+  //Configure Vorpal
+  vorpal
+    .history('beyond-sharepoint-admin')
+    .localStorage('beyond-sharepoint-admin');
+
   vorpal.api = {};
 
   /**
@@ -57,13 +64,10 @@ const app = (function () {
   let loadImportedCommands = Promise.coroutine(function* () {
     let commandsDef = requireUncached('./../commands.hjson');
     _importedCommands = commandsDef.importedCommands;
-    
+
     _importedCommands.forEach(function (cmd) {
       try {
-        const mod = require(cmd);
-        vorpal.use(mod, {
-          parent: app
-        });
+        vorpal.use(cmd);
       } catch (e) {
         /* istanbul ignore next */
         vorpal.log(`Error loading command ${cmd}: `, e);
@@ -80,7 +84,9 @@ const app = (function () {
     _commands = commandsDef.commands;
     _commands.forEach(function (cmd) {
 
-      const existingCmdObj = vorpal.find(cmd);
+      //Remove the existing command if it exists.
+      let cmdName = cmd.substring(cmd.lastIndexOf('/') + 1);
+      const existingCmdObj = vorpal.find(cmdName);
       if (existingCmdObj) {
         if (isReloading) {
           existingCmdObj.remove();
@@ -98,7 +104,7 @@ const app = (function () {
         } catch (e) {
           // .. whatever
         }
-        
+
         vorpal.use(mod, {
           parent: app
         });
@@ -115,13 +121,6 @@ const app = (function () {
         vorpal.log(`Error loading command ${cmd}: `, e);
       }
     });
-
-    //Add statically-defined commands
-
-    //Configure Vorpal
-    app.vorpal
-      .history('beyond-sharepoint-admin')
-      .localStorage('beyond-sharepoint-admin');
   });
 
   /**
@@ -144,7 +143,7 @@ const app = (function () {
       //Unknown error: throw.
       throw ex;
     }
-     
+
   });
 
   return {
@@ -157,25 +156,25 @@ const app = (function () {
 })();
 
 app.init()
-.then(app.loadImportedCommands)
-.then(app.loadCommands)
-.then(app.connect)
-.then(function () {
+  .then(app.loadImportedCommands)
+  .then(app.loadCommands)
+  .then(app.connect)
+  .then(function () {
 
-  let argv = app.vorpal
-    .parse(process.argv, { use: 'minimist' });
+    let argv = app.vorpal
+      .parse(process.argv, { use: 'minimist' });
 
-  if (!argv._) {
-    app.vorpal.log("Entering interactive command mode.");
+    if (!argv._) {
+      app.vorpal.log("Entering interactive command mode.");
 
-    app.vorpal
-      .delimiter('spo$')
-      .show();
-  }
-  else {
-    app.vorpal.parse(process.argv);
-  }
-}, function(error) {
-  app.vorpal.log(error);
-  app.vorpal.log("Exiting...");
-});
+      app.vorpal
+        .delimiter('spo$')
+        .show();
+    }
+    else {
+      app.vorpal.parse(process.argv);
+    }
+  }, function (error) {
+    app.vorpal.log(error);
+    app.vorpal.log("Exiting...");
+  });

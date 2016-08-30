@@ -1,16 +1,23 @@
 {
     commands: [
-        "Add-SPOJavaScriptLink",
-        "Get-SPOJavaScriptLink",
-        "Remove-SPOJavaScriptLink",
-        "Get-SPOListByTitle",
-        "Get-SPOSite",
-        "Reload-SPOCommands",
-        //Util functions
-        "curl"
+        //Core commands
+        "curl",
+        "Select-Object",
+        //Branding commands        
+        "branding/Add-SPOJavaScriptLink",
+        "branding/Get-SPOJavaScriptLink",
+        "branding/Remove-SPOJavaScriptLink",
+        //Lists
+        "lists/Get-SPOListByTitle",
+        //Site Collection commands
+        "sitecollections/Get-SPOSite",
+        //Util commands
+        "util/Reload-SPOCommands",
     ],
     importedCommands: [
         "vorpal-grep",
         "vorpal-less"
+    ],
+    aliases: [
     ]
 }

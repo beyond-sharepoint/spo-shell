@@ -6,6 +6,8 @@ require("bluebird-co");
 
 const _ = require("lodash");
 const inquirer = require("inquirer");
+
+const interfacer = require('./../../util/interfacer');
 const getSPOJavaScriptLink = require("./Get-SPOJavaScriptLink")();
 
 const removeJavaScriptLink = (function () {
@@ -13,10 +15,12 @@ const removeJavaScriptLink = (function () {
         options = options || {};
         options.Scope = options.Scope || "All";
 
-        let scriptLinks = yield getSPOJavaScriptLink.exec(ctx, options);
+        let scriptLinks = yield getSPOJavaScriptLink.exec.call(this, ctx, options);
 
         if (!scriptLinks || scriptLinks.length == 0)
             return;
+
+        scriptLinks = _.orderBy(scriptLinks, ['Sequence'], ['asc']);
 
         let answers = yield inquirer.prompt({
             name: "scriptLinksToRemove",
@@ -36,9 +40,13 @@ const removeJavaScriptLink = (function () {
         let result = [];
         for (let scriptLinkToRemove of answers.scriptLinksToRemove) {
             let sl = scriptLinkToRemove;
+            let url = URI.joinPaths(`/_api/Site/UserCustomActions('${sl.Id}')`).href();
+            if (sl.Scope === 3)
+                url = URI.joinPaths(`/_api/Web/UserCustomActions('${sl.Id}')`).href();
+
             let response = yield ctx.requestAsync({
                 method: "DELETE",
-                url: URI.joinPaths(`/_api/site/UserCustomActions('${sl.Id}')`).href(),
+                url: url
             });
 
             if (response.statusCode === 200) {
@@ -82,7 +90,12 @@ module.exports = function (vorpal, context) {
             return true;
         })
         .action(function (args, callback) {
-            args.options = args.options || {};
-            return removeJavaScriptLink.exec.call(this, vorpal.spContext, args.options).then(callback);
+            interfacer.call(this, {
+                command: removeJavaScriptLink,
+                spContext: vorpal.spContext,
+                options: args.options,
+                async: true,
+                callback
+            });
         });
 };

@@ -5,6 +5,8 @@ const Promise = require('bluebird');
 require("bluebird-co");
 const _ = require("lodash");
 
+const interfacer = require('./../../util/interfacer');
+
 const getJavaScriptLink = (function () {
     let exec = Promise.coroutine(function* (ctx, options) {
         options = options || {};
@@ -40,7 +42,8 @@ const getJavaScriptLink = (function () {
 
         let customActions = _.concat(siteCustomActions, webCustomActions);
         customActions = _.filter(customActions, {"Location": "ScriptLink"});
-        
+        customActions = _.orderBy(customActions, ['Sequence'], ['asc']);
+
         if (options.Name) {
             let result =  _.find(customActions, { "Name": options.Name });
             if (!result)
@@ -48,6 +51,7 @@ const getJavaScriptLink = (function () {
             return [result];
         }
 
+        this.log(customActions);
         return customActions;
     });
 
@@ -67,7 +71,12 @@ module.exports = function (vorpal, context) {
         .option('-s, --Scope [scope]', 'Scope of the action, either Web, Site or All to return both', ['All', 'Web', 'Site'])
         .option('-n, --Name [name]', 'Gets the JavaScriptLink with the specified name.')
         .action(function (args, callback) {
-            args.options = args.options || {};
-            return getJavaScriptLink.exec.call(this, vorpal.spContext, args.options).then(callback);
+            interfacer.call(this, {
+                command: getJavaScriptLink,
+                spContext: vorpal.spContext,
+                options: args.options || {},
+                async: true,
+                callback
+            });
         });
 };
