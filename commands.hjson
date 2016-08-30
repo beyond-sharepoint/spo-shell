@@ -2,6 +2,7 @@
     commands: [
         //Core commands
         "curl",
+        "ls",
         "Select-Object",
         //Branding commands        
         "branding/Add-SPOJavaScriptLink",
