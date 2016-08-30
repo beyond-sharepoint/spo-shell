@@ -43,6 +43,7 @@ const addJavaScriptLink = (function () {
             return response.body.error.message.value;
         }
 
+        this.dir(response.body.d);
         return response.body.d;
     });
 
