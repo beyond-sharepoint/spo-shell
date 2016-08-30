@@ -7,6 +7,8 @@
         "branding/Add-SPOJavaScriptLink",
         "branding/Get-SPOJavaScriptLink",
         "branding/Remove-SPOJavaScriptLink",
+        "branding/Get-SPOWelcomePage",
+        "branding/Set-SPOWelcomePage",
         //Lists
         "lists/Get-SPOListByTitle",
         //Site Collection commands

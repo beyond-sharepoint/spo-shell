@@ -42,7 +42,7 @@ module.exports = function (vorpal, context) {
     }
     vorpal.api.curl = curl;
     vorpal
-        .command('curl [url]', "Execute direct requests using the current SPO session")
+        .command('curl <url>', "Execute direct requests using the current SPO session")
         .option("-m, --Method <method>", "Specifies the HTTP Verb to use. Default is 'GET'")
         .validate(function (args) {
             if (!args.url) {
