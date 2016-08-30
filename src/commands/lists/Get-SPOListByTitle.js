@@ -21,7 +21,7 @@ const getListByTitle = (function () {
             return;
         }
 
-        this.log(result.body.d);
+        this.dir(result.body.d);
         return result.body.d;
     });
 

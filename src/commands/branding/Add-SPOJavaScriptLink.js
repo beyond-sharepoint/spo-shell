@@ -40,7 +40,7 @@ const addJavaScriptLink = (function () {
         let response = yield ctx.requestAsync(requestOptions);
 
         if (response.body.error) {
-            return response.body.error.message.value;
+            this.log(response.body.error.message.value);
         }
 
         this.dir(response.body.d);
