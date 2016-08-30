@@ -51,7 +51,7 @@ const getJavaScriptLink = (function () {
             return [result];
         }
 
-        this.log(customActions);
+        this.dir(customActions);
         return customActions;
     });
 
