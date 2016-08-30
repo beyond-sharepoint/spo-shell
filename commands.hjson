@@ -1,0 +1,16 @@
+{
+    commands: [
+        "Add-SPOJavaScriptLink",
+        "Get-SPOJavaScriptLink",
+        "Remove-SPOJavaScriptLink",
+        "Get-SPOListByTitle",
+        "Get-SPOSite",
+        "Reload-SPOCommands",
+        //Util functions
+        "curl"
+    ],
+    importedCommands: [
+        "vorpal-grep",
+        "vorpal-less"
+    ]
+}
