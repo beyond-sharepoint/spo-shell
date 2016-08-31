@@ -10,7 +10,7 @@ const Gauge = require("gauge");
 
 const interfacer = require('./../../util/interfacer');
 
-const getFile = (function () {
+const downloadFile = (function () {
     let exec = Promise.coroutine(function* (ctx, args, options) {
         let siteRelativeFileUrl = args[0];
         let localFileName = args[1];
@@ -66,15 +66,15 @@ const getFile = (function () {
 
 module.exports = function (vorpal, context) {
     if (vorpal === undefined) {
-        return getFile;
+        return downloadFile;
     }
-    vorpal.api.getFile = getFile;
+    vorpal.api.downloadFile = downloadFile;
     vorpal
-        .command('Get-SPOFile <fileUrl> [localFileName]', 'Downloads the file at the specified url')
+        .command('Download-SPOFile <fileUrl> [localFileName]', 'Downloads the file at the specified url')
         .alias('dl')
         .action(function (args, callback) {
             interfacer.call(this, {
-                command: getFile,
+                command: downloadFile,
                 spContext: vorpal.spContext,
                 args: [ args.fileUrl || "", args.localFileName || "" ],
                 options: args.options || {},

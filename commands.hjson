@@ -11,7 +11,9 @@
         "branding/Get-SPOWelcomePage",
         "branding/Set-SPOWelcomePage",
         //Files
-        "files/Get-SPOFile",
+        "files/Download-SPOFile",
+        //Folders
+        "folders/Get-SPOFolderByServerRelativeUrl",
         //Lists
         "lists/Get-SPOListByTitle",
         //Site Collection commands
