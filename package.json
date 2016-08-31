@@ -1,8 +1,11 @@
 {
   "name": "@beyond-sharepoint/spo-shell",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cross-Platform Command Line Utility for SharePoint Online",
   "main": "/lib/index.js",
+  "bin": {
+    "spo-shell": "./src/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./src/index.js"
