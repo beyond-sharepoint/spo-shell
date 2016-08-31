@@ -37,7 +37,10 @@ const ls = (function () {
 
             switch(item.__metadata.type) {
                 case "SP.Folder":
-                    name = chalk.white.bold(name);
+                    name = chalk.blue(name);
+                    break;
+                default:
+                    name = chalk.green(name);
                     break;
             }
             names.push(name);
