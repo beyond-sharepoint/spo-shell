@@ -8,12 +8,14 @@ const _ = require("lodash");
 const inquirer = require("inquirer");
 
 const interfacer = require('./../../util/interfacer');
-const getSPOJavaScriptLink = require("./Get-SPOJavaScriptLink")();
+const requireUncached = require('require-uncached');
+const getSPOJavaScriptLink = requireUncached("./Get-SPOJavaScriptLink")();
 
 const removeJavaScriptLink = (function () {
     let exec = Promise.coroutine(function* (ctx, options) {
         options = options || {};
         options.Scope = options.Scope || "All";
+        options.Silent = true;
 
         let scriptLinks = yield getSPOJavaScriptLink.exec.call(this, ctx, options);
 

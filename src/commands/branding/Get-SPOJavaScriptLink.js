@@ -51,7 +51,10 @@ const getJavaScriptLink = (function () {
             return [result];
         }
 
-        this.dir(customActions);
+        if (!options.Silent) {
+            this.dir(customActions);
+        }
+        
         return customActions;
     });
 

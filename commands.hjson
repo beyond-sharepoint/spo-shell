@@ -10,6 +10,8 @@
         "branding/Remove-SPOJavaScriptLink",
         "branding/Get-SPOWelcomePage",
         "branding/Set-SPOWelcomePage",
+        //Files
+        "files/Get-SPOFile",
         //Lists
         "lists/Get-SPOListByTitle",
         //Site Collection commands
