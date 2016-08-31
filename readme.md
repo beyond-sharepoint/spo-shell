@@ -39,4 +39,4 @@ Sure, but there's not a SPO Powershell for .net core. Yet (?)
 
 ## License
 
-MIT © [Sean McLellan](https://github.com/oceanswave)
+ISC © [Sean McLellan](https://github.com/oceanswave)
