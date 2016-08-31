@@ -11,16 +11,13 @@ const Gauge = require("gauge");
 const interfacer = require('./../../util/interfacer');
 
 const downloadFile = (function () {
-    let exec = Promise.coroutine(function* (ctx, args, options) {
-        let siteRelativeFileUrl = args[0];
-        let localFileName = args[1];
+    let exec = Promise.coroutine(function* (ctx, siteRelativeFileUrl, localFileName, options) {
 
         if (!siteRelativeFileUrl)
             throw Error("A URL must be specified of the target file to download.");
 
         if (!localFileName) {
-            localFileName = siteRelativeFileUrl.substring(siteRelativeFileUrl.lastIndexOf('/') > -1 ? siteRelativeFileUrl.lastIndexOf('/') + 1  : 0);
-            console.log(localFileName);
+            localFileName = siteRelativeFileUrl.substring(siteRelativeFileUrl.lastIndexOf('/') > -1 ? siteRelativeFileUrl.lastIndexOf('/') + 1 : 0);
         }
 
         let opts = {
@@ -34,28 +31,43 @@ const downloadFile = (function () {
 
         gauge.show(localFileName, 0)
 
-        let waitPromise = new Promise(function(resolve, reject) {
-             let result = progress(ctx.request(opts), {
-                 throttle: 250
-             })
-                .on('progress', function(state) {
+        let waitPromise = new Promise(function (resolve, reject) {
+            let request = ctx.request(opts);
+            progress(request, {
+                throttle: 250
+            })
+                .on('progress', function (state) {
                     gauge.show(`${localFileName} : ${(state.percentage * 100).toFixed(2)}%`, state.percentage)
                 })
-                .on('error', function(err) {
+                .on('error', function (err) {
                     reject(err);
                 })
-                .on('end', function() {
+                .on('end', function () {
                     gauge.hide();
                     gauge.disable();
-                    resolve(result);
+                    resolve(request);
                 })
                 .pipe(fs.createWriteStream(localFileName));
         });
 
         try {
-            let stats = yield waitPromise;
-            this.log(`Done! ${stats.bytesWritten} bytes written to ${localFileName}`);
-        } catch(ex) {
+            let request = yield waitPromise;
+
+            switch (request.response.statusCode) {
+                case 200:
+                    this.log(`Done! ${request.response.headers['content-length']} bytes written to ${localFileName}`);
+                    break;
+                case 404:
+                    this.log("A file could not be found at the specified url.");
+                    break;
+                default:
+                    if (request.response.body.error)
+                        this.log(request.response.body.error.message);
+                    else
+                        this.log(`An error occurred. StatusCode: ${request.response.statusCode}`);
+                    break;
+            }
+        } catch (ex) {
             this.log(ex);
         }
     });
@@ -76,7 +88,7 @@ module.exports = function (vorpal, context) {
             interfacer.call(this, {
                 command: downloadFile,
                 spContext: vorpal.spContext,
-                args: [ args.fileUrl || "", args.localFileName || "" ],
+                args: [args.fileUrl || "", args.localFileName || ""],
                 options: args.options || {},
                 async: true,
                 callback

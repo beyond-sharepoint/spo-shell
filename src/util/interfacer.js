@@ -44,7 +44,10 @@ module.exports = function (opt) {
     }
 
     if (!_.isNil(opt.args)) {
-        fnArgs.push(opt.args);
+        if (_.isArray(opt.args))
+            fnArgs = _.concat(fnArgs, opt.args);
+        else
+            fnArgs.push(opt.args);
     }
 
     if (!_.isNil(opt.options)) {
@@ -58,13 +61,21 @@ module.exports = function (opt) {
     };
 
     //This logic is a little weird...
+    let commandName;
     if (self.command)
-        debug(`Calling ${self.command}`);
+        commandName = self.command;
     else
-        debug(`Calling ${self.commandWrapper.command}`);
+        commandName = self.commandWrapper.command;
+    
+    debug(`Calling ${commandName}`);
 
     if (opt.async === true) {
-        return fn().then(onResult);
+        return fn()
+            .then(function(result) {
+                debug(`${commandName} completed.`);
+                return result;
+            })
+            .then(onResult);
     }
     return onResult(fn());
 };

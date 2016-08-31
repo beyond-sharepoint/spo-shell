@@ -12,6 +12,7 @@
         "branding/Set-SPOWelcomePage",
         //Files
         "files/Download-SPOFile",
+        "files/Upload-SPOFile",
         //Folders
         "folders/Get-SPOFolderByServerRelativeUrl",
         //Lists
