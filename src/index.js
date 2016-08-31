@@ -21,8 +21,8 @@ const app = (function () {
 
   //Configure Vorpal
   vorpal
-    .history('beyond-sharepoint-admin')
-    .localStorage('beyond-sharepoint-admin');
+    .history('beyond-sharepoint_spo-shell')
+    .localStorage('beyond-sharepoint_spo-shell');
 
   vorpal.api = {};
 
@@ -42,19 +42,19 @@ const app = (function () {
    * Initializes configuration by retrieving it from .env, environment or prompting for it.
    */
   let init = Promise.coroutine(function* () {
-    yield getConfiguationValue(_config, "tenantUrl", "bspadm_tenanturl", {
+    yield getConfiguationValue(_config, "tenantUrl", "spo-shell_tenanturl", {
       type: 'input',
       message: `Enter the url to your SharePoint Online tenant`,
       name: 'tenantUrl'
     });
 
-    yield getConfiguationValue(_config, "username", "bspadm_username", {
+    yield getConfiguationValue(_config, "username", "spo-shell_username", {
       type: 'input',
       message: `Enter the username for ${_config.tenantUrl}`,
       name: 'username'
     });
 
-    yield getConfiguationValue(_config, "password", "bspadm_password", {
+    yield getConfiguationValue(_config, "password", "spo-shell_password", {
       type: 'password',
       message: `Enter the password for ${_config.tenantUrl}`,
       name: 'password'
