@@ -1,14 +1,14 @@
 {
   "name": "@beyond-sharepoint/spo-shell",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Cross-Platform Command Line Utility for SharePoint Online",
-  "main": "/lib/index.js",
+  "main": "./lib/index.js",
   "bin": {
-    "spo-shell": "bin/spo-shell.js"
+    "spo-shell": "./bin/spo-shell.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js"
+    "start": "./bin/spo-shell.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,8 @@
   "keywords": [
     "SharePoint Online",
     "SPO",
+    "spo-shell",
+    "SharePoint Shell",
     "Utilities"
   ],
   "author": "Sean McLellan",
