@@ -4,6 +4,7 @@ const URI = require("urijs");
 const Promise = require('bluebird');
 require("bluebird-co");
 
+const path = require("path");
 const fs = require("fs");
 const fsAutocomplete = require('vorpal-autocomplete-fs');
 const progress = require("request-progress");
@@ -26,11 +27,11 @@ const uploadFile = (function () {
             targetFilename = options.Filename;
         }
 
-        console.log(targetFolderServerRelativeUrl, targetFilename);
+        let localFilePath = path.join(process.cwd(), localFilename);
 
         try
         {
-            fs.statSync(localFilename).isFile();
+            fs.statSync(localFilePath).isFile();
         }
         catch (err)
         {
@@ -40,19 +41,8 @@ const uploadFile = (function () {
         let opts = {
             method: "POST",
             url: URI.joinPaths(`/_api/web/getfolderbyserverrelativeurl('${URI.encode(targetFolderServerRelativeUrl)}')/files/add(overwrite=${options.Overwrite}, url='${URI.encode(targetFilename)}')`).href(),
-            body: fs.createReadStream(localFilename)
+            body: fs.createReadStream(localFilePath)
         };
-
-        // var res = yield ctx.requestAsync(opts);
-        // console.log(res);
-        // fs.createReadStream(localFilename)
-        //     .pipe(ctx.request(opts, function(err, res) {
-        //         console.log('foo');
-        //         console.log(res);
-        //         if (res.body.error) {
-        //             console.log(res.body.error.message);
-        //         }
-        //     }));
 
         var gauge = new Gauge({
             updateInterval: 50
