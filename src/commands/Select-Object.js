@@ -7,7 +7,7 @@ require("bluebird-co");
 const interfacer = require('./../util/interfacer');
 
 const selectObject = (function () {
-    let exec = Promise.coroutine(function* (options) {
+    let exec = Promise.coroutine(function* (ctx, options) {
         let lastResultPromise = this.getLastResult();
         let lastResult =  yield lastResultPromise;
 
@@ -27,9 +27,49 @@ const selectObject = (function () {
             }
             output = tmp;
         } else {
-            output = _.pick(output, options.Property);
-            output = _.omit(output, options.ExcludeProperty);
+            if (!_.isNil(options.Property)) {
+                output = _.pick(output, options.Property);
+            }
+
+            if (!_.isNil(options.ExcludeProperty)) {
+                output = _.omit(output, options.ExcludeProperty);
+            }
         }
+
+        //Expand objects by determining if they have a __deferred uri, if they do, get the deferred value.
+        if (!_.isArray(options.ExpandProperty))
+            options.ExpandProperty = [options.ExpandProperty];
+
+        let expandDeferreds = [];
+        for (let propertyPath of options.ExpandProperty) {
+            let deferredUri = _.get(output, [propertyPath, "__deferred", "uri"]);
+
+            if (deferredUri) {
+                let deferred = ctx.requestAsync({
+                    method: "GET",
+                    baseUrl: "",
+                    url: deferredUri
+                }).then(function(response) {
+                    let value = _.get(response, "body.d");
+                    if (value) {
+                        _.set(output, propertyPath, value);
+                    }
+                    else {
+                        let errorMessage = _.get(response, "body.e.error.message");
+                        if (errorMessage) {
+                            _.set(output, propertyPath, errorMessage);
+                        } else {
+                            _.set(output, propertyPath, `Error retrieving deferred: ${response.statusCode}`);
+                        }
+                    }
+                });
+
+                expandDeferreds.push(deferred);
+            }
+        }
+        //TODO: Recursive ExpandProperties.
+
+        yield Promise.all(expandDeferreds);
 
         this.dir(output);
         return output;
@@ -54,6 +94,7 @@ module.exports = function (vorpal, context) {
         .action(function (args, callback) {
             interfacer.call(this, {
                 command: selectObject,
+                spContext: vorpal.spContext,
                 options: args.options || {},
                 async: true,
                 callback
