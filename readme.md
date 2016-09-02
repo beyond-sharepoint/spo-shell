@@ -110,7 +110,7 @@ Simply import the module, authenticate, and call the desired methods.
 
 ``` js
 const spo = require('@beyond-sharepoint/spo-shell');
-const spoApi = spo.spoApi;
+const spoApi = spo.api;
 
 var spoContext = spo.authenticate("mytenantname.sharepoint.com", "myusername@mytenantname.onmicrosoft.com", "mypassword")
     .then(function(ctx) {
@@ -194,6 +194,7 @@ Here's what's currently supported, and is rapidly expanding:
 ---
 #### Core commands
 - cd
+- clear
 - curl
 - grep
 - less

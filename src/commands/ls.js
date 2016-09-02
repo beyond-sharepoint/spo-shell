@@ -70,8 +70,7 @@ module.exports = function (vorpal, context) {
     if (vorpal === undefined) {
         return ls;
     }
-
-    vorpal.api.ls = ls;
+    
     vorpal
         .command('ls [paths...]', 'list file and directory names, also list file/directory attributes')
         .action(function (args, callback) {

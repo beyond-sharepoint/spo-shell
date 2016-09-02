@@ -2,6 +2,7 @@
     commands: [
         //Core commands
         "cd",
+        "clear",
         "curl",
         "ls",
         "Select-Object",

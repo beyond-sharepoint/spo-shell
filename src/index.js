@@ -7,7 +7,7 @@ require("bluebird-co");
 const path = require("path");
 const chalk = require("chalk");
 const _ = require("lodash");
-const spo = require("@beyond-sharepoint/spo-remote-auth");
+const spoRemoteAuth = require("@beyond-sharepoint/spo-remote-auth");
 const delimiter = require("./delimiter");
 
 //ALL the configuration!
@@ -125,18 +125,22 @@ const app = (function () {
     });
   });
 
+  let getExports = Promise.coroutine(function* () {
+
+  });
+
   /**
    * Connects and authenticates with SharePoint
    */
   let connect = Promise.coroutine(function* () {
     vorpal.log(chalk.blue(`Connecting to ${_config.tenantUrl}...`));
     try {
-      let ctx = yield spo.authenticate(_config.tenantUrl, _config.username, _config.password);
+      let ctx = yield spoRemoteAuth.authenticate(_config.tenantUrl, _config.username, _config.password);
       vorpal.log(chalk.green(`Connected.`));
       vorpal.log(`SiteFullUrl: ${ctx.contextInfo.SiteFullUrl}. LibraryVersion: ${ctx.contextInfo.LibraryVersion}.`);
       vorpal.spContext = ctx;
       vorpal.spContext.currentPath = '/';
-      vorpal.spContext.getPathRelativeToCurrent = function(targetPath) {
+      vorpal.spContext.getPathRelativeToCurrent = function (targetPath) {
         return path.join(vorpal.spContext.currentPath, targetPath);
       }
 
@@ -162,25 +166,31 @@ const app = (function () {
   }
 })();
 
-app.init()
-  .then(app.loadImportedCommands)
-  .then(app.loadCommands)
-  .then(app.connect)
-  .then(function () {
+module.exports.startInteractiveShell = function () {
+  app.init()
+    .then(app.loadImportedCommands)
+    .then(app.loadCommands)
+    .then(app.connect)
+    .then(function () {
 
-    let argv = app.vorpal
-      .parse(process.argv, { use: 'minimist' });
+      let argv = app.vorpal
+        .parse(process.argv, { use: 'minimist' });
 
-    if (!argv._) {
-      app.vorpal.log("Entering interactive command mode.");
+      if (!argv._) {
+        app.vorpal.log("Entering interactive command mode.");
 
-      delimiter.refresh(app.vorpal);
-      app.vorpal.show();
-    }
-    else {
-      app.vorpal.parse(process.argv);
-    }
-  }, function (error) {
-    app.vorpal.log(error);
-    app.vorpal.log("Exiting...");
-  });
+        delimiter.refresh(app.vorpal);
+        app.vorpal.show();
+      }
+      else {
+        app.vorpal.parse(process.argv);
+      }
+    }, function (error) {
+      app.vorpal.log(error);
+      app.vorpal.log("Exiting...");
+    });
+};
+
+//TODO: .api
+
+module.exports.authenticate = spoRemoteAuth.authenticate;

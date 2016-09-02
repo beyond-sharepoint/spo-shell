@@ -51,8 +51,7 @@ module.exports = function (vorpal, context) {
     if (vorpal === undefined) {
         return cd;
     }
-
-    vorpal.api.cd = cd;
+    
     vorpal
         .command('cd [dir]')
         .action(function (args, callback) {

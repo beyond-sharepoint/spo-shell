@@ -84,7 +84,7 @@ module.exports = function (vorpal, context) {
     if (vorpal === undefined) {
         return selectObject;
     }
-    vorpal.api.selectObject = selectObject;
+    
     vorpal
         .command('Select-Object', "Selects objects or object properties.")
         .alias("select")

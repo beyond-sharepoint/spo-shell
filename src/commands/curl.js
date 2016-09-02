@@ -40,7 +40,7 @@ module.exports = function (vorpal, context) {
     if (vorpal === undefined) {
         return curl;
     }
-    vorpal.api.curl = curl;
+    
     vorpal
         .command('curl <url>', "Execute direct requests using the current SPO session")
         .option("-m, --Method <method>", "Specifies the HTTP Verb to use. Default is 'GET'")
