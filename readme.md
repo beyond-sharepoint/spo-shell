@@ -1,7 +1,7 @@
 @beyond-sharepoint/spo-shell
 
 <h1 align="center">
-	<img width="288" src="https://raw.githubusercontent.com/beyond-sharepoint/spo-shell/master/SPO-Shell-Horizontal.png" alt="spo-shell">
+	<img width="576" src="https://raw.githubusercontent.com/beyond-sharepoint/spo-shell/master/SPO-Shell-Horizontal.png" alt="spo-shell">
 </h1>
 
 > Cross-Platform interactive command shell for SharePoint Online
@@ -300,4 +300,7 @@ Just me. Feel free to submit PRs and I'll be happy to add you.
 ISC © [Sean McLellan](https://github.com/oceanswave)
 
 
-[beyond-sharepoint](https://github.com/beyond-sharepoint)
+<h1 align="center">
+    <a href="https://github.com/beyond-sharepoint/spo-shell"><img width="250" src="https://raw.githubusercontent.com/beyond-sharepoint/spo-shell/master/SPO-Shell-Square.png" alt="spo-shell"></a>
+	<a href="https://beyond-sharepoint.github.io"><img width="250" src="https://raw.githubusercontent.com/beyond-sharepoint/beyond-sharepoint.github.io/master/assets/media/beyond-sharepoint-transparent.png" alt="beyond-sharepoint"></a>
+</h1>
