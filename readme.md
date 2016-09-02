@@ -41,7 +41,7 @@ spo:/Shared Documents$ up ./MyApp/ . -r -u --Checksum --Watch
 
 spo-shell lets you peruse your SPO environment and perform hassle-free site content provisioning, no add-ins. Simple.
 
-### Sweet. But what about performing admin commands; like adding/removing JSLInk.
+### Sweet. But what about performing admin commands; like adding/removing JSLink.
 
 We got 'ya. spo-shell has a bunch of SPO/SPPnP cmdlets built-in... in a powershelly like fashion.
 
@@ -55,7 +55,7 @@ spo:/Shared Documents$ Add-SPOJavaScriptLink --Name "My JSLink" --ScriptSrc "htt
 spo:/Shared Documents$ Set-SPOWelcomePage --Url "/mynewwelcomepage.aspx"
 ```
 
-The goal is to have a majority of these commands (at least the ones that make sense) available. See the (roadmap)[#roadmap]
+The goal is to have a majority of these commands (at least the ones that make sense) available. See the [roadmap](#roadmap)
 
 ### But... I like the built-in powershell commands
 
