@@ -1,5 +1,3 @@
-@beyond-sharepoint/spo-shell
-
 <h1 align="center">
 	<img width="576" src="https://raw.githubusercontent.com/beyond-sharepoint/spo-shell/master/SPO-Shell-Horizontal.png" alt="spo-shell">
 </h1>
