@@ -55,7 +55,7 @@ spo:/Shared Documents$ Add-SPOJavaScriptLink --Name "My JSLink" --ScriptSrc "htt
 spo:/Shared Documents$ Set-SPOWelcomePage --Url "/mynewwelcomepage.aspx"
 ```
 
-The goal is to have a majority of these commands (at least the ones that make sense) available. See the (roadmap)[#roadmap)
+The goal is to have a majority of these commands (at least the ones that make sense) available. See the (roadmap)[#roadmap]
 
 ### But... I like the built-in powershell commands
 
@@ -189,7 +189,7 @@ C:\> spo-shell
 The goal is to have a majority of Sharepoint PowerShell cmdlets as well as Office PnP cmdlets implemented along with powershell-like features.
 
 Here's what's currently supported, and is rapidly expanding:
----
+
 #### Core commands
 - cd
 - clear
@@ -283,11 +283,11 @@ Interaction with the actual SharePoint objects are through the Powershell-esque 
 
 ## Roadmap
 
--[ ] Implement all SharePoint Online Powershell cmdlets.
--[ ] Implement all SharePoint PnP Powershell cmdlets.
--[ ] Interact with the MS Graph
--[ ] Support NTLM-based auth
--[ ] Support On-Prem
+ - [ ] Implement all SharePoint Online Powershell cmdlets.
+ - [ ] Implement all SharePoint PnP Powershell cmdlets.
+ - [ ] Add commands that interact with the MS Graph
+ - [ ] Support NTLM-based auth
+ - [ ] Support On-Prem
 
 ## Team
 
