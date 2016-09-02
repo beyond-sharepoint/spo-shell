@@ -11,7 +11,7 @@ const columnify = require('./../util/columnify');
 
 const ls = (function () {
     let exec = Promise.coroutine(function* (ctx, options) {
-        let currentPath = "/";
+        let currentPath = ctx.currentPath;
 
         let filesPromise = ctx.requestAsync({
             method: "GET",

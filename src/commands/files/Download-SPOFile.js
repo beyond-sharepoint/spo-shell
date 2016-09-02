@@ -14,15 +14,20 @@ const interfacer = require('./../../util/interfacer');
 const downloadFile = (function () {
     let exec = Promise.coroutine(function* (ctx, siteRelativeFileUrl, localFilename, options) {
 
+        if (!ctx)
+            throw Error('A SharePoint Context must be specified.');
+
         if (!siteRelativeFileUrl)
             throw Error("A URL must be specified of the target file to download.");
         
+        siteRelativeFileUrl = ctx.getPathRelativeToCurrent(siteRelativeFileUrl);
+
         if (!localFilename) {
             localFilename = siteRelativeFileUrl.substring(siteRelativeFileUrl.lastIndexOf('/') > -1 ? siteRelativeFileUrl.lastIndexOf('/') + 1 : 0);
         }
 
         let localFilePath = path.join(process.cwd(), localFilename);
-        
+
         let opts = {
             method: "GET",
             url: URI.joinPaths(siteRelativeFileUrl).href(),
@@ -55,7 +60,7 @@ const downloadFile = (function () {
 
         try {
             let request = yield waitPromise;
-
+            this.dir(request);
             switch (request.response.statusCode) {
                 case 200:
                     this.log(`Done! ${request.response.headers['content-length']} bytes written to ${localFilename}`);

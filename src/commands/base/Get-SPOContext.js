@@ -6,20 +6,10 @@ require("bluebird-co");
 
 const interfacer = require('./../../util/interfacer');
 
-const getFolderByServerRelativeUrl = (function () {
+const getContext = (function () {
     let exec = Promise.coroutine(function* (ctx, url, options) {
-        let result = yield ctx.requestAsync({
-            method: "GET",
-            url: URI.joinPaths("/_api/Web/", `GetFolderByServerRelativeUrl('${URI.encode(url)}')/`).href(),
-        });
-
-        if (result.body.error) {
-            this.log(result.body.error.message.value);
-            return;
-        }
-
-        this.dir(result.body.d);
-        return result.body.d;
+        this.dir(ctx.contextInfo);
+        return ctx.contextInfo;
     });
 
     return {
@@ -29,15 +19,15 @@ const getFolderByServerRelativeUrl = (function () {
 
 module.exports = function (vorpal, context) {
     if (vorpal === undefined) {
-        return getFolderByServerRelativeUrl;
+        return getContext;
     }
 
-    vorpal.api.getFolderByServerRelativeUrl = getFolderByServerRelativeUrl;
+    vorpal.api.getContext = getContext;
     vorpal
-        .command('Get-SPOFolderByServerRelativeUrl <url>')
+        .command('Get-SPOContext')
         .action(function (args, callback) {
             interfacer.call(this, {
-                command: getFolderByServerRelativeUrl,
+                command: getContext,
                 spContext: vorpal.spContext,
                 args: args.url || "",
                 options: args.options || {},

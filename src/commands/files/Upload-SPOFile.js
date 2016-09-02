@@ -21,6 +21,8 @@ const uploadFile = (function () {
 
         if (!targetFolderServerRelativeUrl)
             throw Error("The target folder server relative url must be specified.");
+        
+        targetFolderServerRelativeUrl = ctx.getPathRelativeToCurrent(targetFolderServerRelativeUrl);
 
         let targetFilename = localFilename.substring(localFilename.lastIndexOf("/") + 1);
         if (options.Filename) {
@@ -69,6 +71,7 @@ const uploadFile = (function () {
 
         try {
             let request = yield waitPromise;
+
             switch(request.response.statusCode) {
                 case 200:
                     this.log(`Done! ${request.headers['content-length']} bytes written to ${targetFilename} at ${targetFolderServerRelativeUrl}`);

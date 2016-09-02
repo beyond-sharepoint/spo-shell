@@ -4,9 +4,11 @@ const requireUncached = require("require-uncached");
 const Promise = require('bluebird');
 require("bluebird-co");
 
+const path = require("path");
 const chalk = require("chalk");
 const _ = require("lodash");
 const spo = require("@beyond-sharepoint/spo-remote-auth");
+const delimiter = require("./delimiter");
 
 //ALL the configuration!
 const inquirer = require('inquirer');
@@ -133,6 +135,11 @@ const app = (function () {
       vorpal.log(chalk.green(`Connected.`));
       vorpal.log(`SiteFullUrl: ${ctx.contextInfo.SiteFullUrl}. LibraryVersion: ${ctx.contextInfo.LibraryVersion}.`);
       vorpal.spContext = ctx;
+      vorpal.spContext.currentPath = '/';
+      vorpal.spContext.getPathRelativeToCurrent = function(targetPath) {
+        return path.join(vorpal.spContext.currentPath, targetPath);
+      }
+
       return ctx;
     }
     catch (ex) {
@@ -167,9 +174,8 @@ app.init()
     if (!argv._) {
       app.vorpal.log("Entering interactive command mode.");
 
-      app.vorpal
-        .delimiter('spo$')
-        .show();
+      delimiter.refresh(app.vorpal);
+      app.vorpal.show();
     }
     else {
       app.vorpal.parse(process.argv);

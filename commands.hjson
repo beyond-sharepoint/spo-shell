@@ -1,9 +1,12 @@
 {
     commands: [
         //Core commands
+        "cd",
         "curl",
         "ls",
         "Select-Object",
+        //Base,
+        "base/Get-SPOContext",
         //Branding commands        
         "branding/Add-SPOJavaScriptLink",
         "branding/Get-SPOJavaScriptLink",
@@ -21,6 +24,8 @@
         "sitecollections/Get-SPOSite",
         //Util commands
         "util/Reload-SPOCommands",
+        //Web
+        "web/Get-SPOWeb"
     ],
     importedCommands: [
         "vorpal-grep",
