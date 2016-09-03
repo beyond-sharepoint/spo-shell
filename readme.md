@@ -302,3 +302,5 @@ ISC © [Sean McLellan](https://github.com/oceanswave)
     <a href="https://github.com/beyond-sharepoint/spo-shell"><img width="250" src="https://raw.githubusercontent.com/beyond-sharepoint/spo-shell/master/SPO-Shell-Square.png" alt="spo-shell"></a>
 	<a href="https://beyond-sharepoint.github.io"><img width="250" src="https://raw.githubusercontent.com/beyond-sharepoint/beyond-sharepoint.github.io/master/assets/media/beyond-sharepoint-transparent.png" alt="beyond-sharepoint"></a>
 </h1>
+
+Much <3 to [Vorpal](https://github.com/dthree/vorpal) without which this all wouldn't be possible.

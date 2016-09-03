@@ -3,6 +3,7 @@
 const util = require("util");
 const _ = require("lodash");
 const debug = require('debug')('interfacer');
+const inquirer = require("inquirer");
 
 let _lastResult;
 module.exports = function (opt) {
@@ -13,7 +14,8 @@ module.exports = function (opt) {
     opt.callback = opt.callback || function () { };
     opt.command = opt.command || { exec() { } };
 
-    const logger = {
+    //Object that is set as the 'this' object of each command.
+    const commandApi = {
         getLastResult() {
             return _lastResult;
         },
@@ -24,11 +26,14 @@ module.exports = function (opt) {
             stdout += `${out}\n`;
             if (opt.silent !== true) {
                 // process.stdout.write(out) // to do - handle newline problem.
-                self.log(out);
+                return self.log(out);
             }
         },
         dir(obj) {
-            self.log(util.inspect(obj, false, null));
+            return self.log(util.inspect(obj, false, null));
+        },
+        prompt() {
+            return inquirer.prompt.apply(self, arguments);
         }
     };
 
@@ -55,7 +60,7 @@ module.exports = function (opt) {
     }
 
     let fn = function() {
-        var result = opt.command.exec.apply(logger, fnArgs);
+        var result = opt.command.exec.apply(commandApi, fnArgs);
         _lastResult = result;
         return result;
     };

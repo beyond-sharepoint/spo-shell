@@ -5,7 +5,6 @@ const Promise = require('bluebird');
 require("bluebird-co");
 
 const _ = require("lodash");
-const inquirer = require("inquirer");
 
 const interfacer = require('./../../util/interfacer');
 const requireUncached = require('require-uncached');
@@ -24,7 +23,7 @@ const removeJavaScriptLink = (function () {
 
         scriptLinks = _.orderBy(scriptLinks, ['Sequence'], ['asc']);
 
-        let answers = yield inquirer.prompt({
+        let answers = yield this.prompt({
             name: "scriptLinksToRemove",
             type: "checkbox",
             message: "Select JavaScriptLink(s) to remove",

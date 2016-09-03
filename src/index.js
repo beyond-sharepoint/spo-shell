@@ -7,11 +7,12 @@ require("bluebird-co");
 const path = require("path");
 const chalk = require("chalk");
 const _ = require("lodash");
+const inquirer = require("inquirer");
+
 const spoRemoteAuth = require("@beyond-sharepoint/spo-remote-auth");
 const delimiter = require("./delimiter");
 
 //ALL the configuration!
-const inquirer = require('inquirer');
 const Vorpal = require('vorpal');
 require('dotenv').config({ silent: true });
 
@@ -19,7 +20,7 @@ const app = (function () {
   let _config = {};
   let _commands = [];
   let _importedCommands = [];
-  let vorpal = new Vorpal();
+  const vorpal = new Vorpal();
 
   //Configure Vorpal
   vorpal
