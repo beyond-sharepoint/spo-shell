@@ -13,32 +13,7 @@ const Gauge = require("gauge");
 const interfacer = require('./../../util/interfacer');
 
 const uploadFile = (function () {
-    let exec = Promise.coroutine(function* (ctx, localFilename, targetFolderServerRelativeUrl, options) {
-        options.Overwrite = options.Overwrite ? !!options.Overwrite : false;
-
-        if (!localFilename)
-            throw Error("The path to a file to upload must be specified.");
-
-        if (!targetFolderServerRelativeUrl)
-            throw Error("The target folder server relative url must be specified.");
-        
-        targetFolderServerRelativeUrl = ctx.getPathRelativeToCurrent(targetFolderServerRelativeUrl);
-
-        let targetFilename = localFilename.substring(localFilename.lastIndexOf("/") + 1);
-        if (options.Filename) {
-            targetFilename = options.Filename;
-        }
-
-        let localFilePath = path.join(process.cwd(), localFilename);
-
-        try
-        {
-            fs.statSync(localFilePath).isFile();
-        }
-        catch (err)
-        {
-            throw Error("The specified file doesn't exist.");
-        }
+    let uploadFile = Promise.coroutine(function*(ctx, localFilePath, targetFolderServerRelativeUrl, targetFilename, options) {
 
         let opts = {
             method: "POST",
@@ -71,6 +46,7 @@ const uploadFile = (function () {
 
         try {
             let request = yield waitPromise;
+            request.removeAllListeners();
 
             switch(request.response.statusCode) {
                 case 200:
@@ -80,7 +56,7 @@ const uploadFile = (function () {
                     this.log("The specified file already exists in the target folder. Specify the -o option to overwrite the file.");
                     break;
                 default:
-                    if (request.response.body.error)
+                    if (request.response.body && request.response.body.error)
                         this.log(request.response.body.error.message);
                     else
                         this.log(`An error occurred. StatusCode: ${request.response.statusCode}`);
@@ -88,6 +64,69 @@ const uploadFile = (function () {
             }
         } catch(ex) {
             this.log(ex);
+        }
+    });
+
+    let createFolder= Promise.coroutine(function*(ctx, localDirectoryPath, targetFolderServerRelativeUrl, targetRootFolder, options) {
+
+        //If the targetRootFolder does not exist, create it.
+        let opts = {
+            method: "POST",
+            url: URI.joinPaths(`/_api/web/getfolderbyserverrelativeurl('${URI.encode(targetFolderServerRelativeUrl)}')/folders/add(url='${URI.encode(targetRootFolder)}')`).href(),
+        };
+
+        let result = yield ctx.requestAsync(opts);
+
+        //Folder created.
+        if (result.statusCode === 200) {
+            this.dir(result);
+            return result.body.d;
+        }
+
+        this.dir(result);
+    });
+
+    let exec = Promise.coroutine(function* (ctx, localFilename, targetFolderServerRelativeUrl, options) {
+        options.Overwrite = options.Overwrite ? !!options.Overwrite : false;
+
+        if (!localFilename)
+            throw Error("The path to a file to upload must be specified.");
+
+        if (!targetFolderServerRelativeUrl)
+            throw Error("The target folder server relative url must be specified.");
+        
+        targetFolderServerRelativeUrl = ctx.getPathRelativeToCurrent(targetFolderServerRelativeUrl);
+
+        let localFilePath = path.join(process.cwd(), localFilename);
+
+        let mode = "file";
+        try
+        {
+            let stat = fs.statSync(localFilePath);
+            if (stat.isFile())
+                mode = "file";
+            if (stat.isDirectory())
+                mode = "directory";
+        }
+        catch (err)
+        {
+            throw Error("The  file or folder to upload cannot be found.");
+        }
+
+        if (mode === "file") {
+            let targetFilename = path.basename(localFilePath);
+            if (options.Filename) {
+                targetFilename = options.Filename;
+            }
+
+            yield uploadFile.call(this, ctx, localFilePath, targetFolderServerRelativeUrl, targetFilename, options);
+        } else {
+            let targetRootFolder = path.basename(localFilePath);
+            if (options.RootFolder) {
+                targetRootFolder = options.RootFolder;
+            }
+
+            yield createFolder.call(this, ctx, localFilePath, targetFolderServerRelativeUrl, targetRootFolder, options);
         }
     });
     return {
@@ -101,16 +140,16 @@ module.exports = function (vorpal, context) {
     }
     vorpal.api.uploadFile = uploadFile;
     vorpal
-        .command('Upload-SPOFile <localFileName> <targetFolderServerRelativeUrl>', 'Uploads the specified file to the specified url')
+        .command('Upload-SPOFile <localFileName> [targetFolderServerRelativeUrl]', 'Uploads the specified file to the specified url')
         .alias('ul')
-        .autocomplete(fsAutocomplete())
+        .autocomplete(fsAutocomplete({all: true}))
         .option('-o, --Overwrite', 'Overwrite the file if it already exists')
         .option('-n, --Filename <fileName', 'Specify the target file name if it should differ from the local file name.')
         .action(function (args, callback) {
             interfacer.call(this, {
                 command: uploadFile,
                 spContext: vorpal.spContext,
-                args: [ args.localFileName || "", args.targetFolderServerRelativeUrl || "" ],
+                args: [ args.localFileName || "", args.targetFolderServerRelativeUrl || "." ],
                 options: args.options || {},
                 async: true,
                 callback

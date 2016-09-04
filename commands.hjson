@@ -5,6 +5,7 @@
         "clear",
         "curl",
         "ls",
+        "rmdir",
         "Select-Object",
         //Base,
         "base/Get-SPOContext",

@@ -37,28 +37,17 @@ const ls = (function () {
 
             switch(item.__metadata.type) {
                 case "SP.Folder":
-                    name = chalk.blue(name);
+                    name = chalk.cyan(name);
                     break;
                 default:
-                    name = chalk.green(name);
+                    name = chalk.white(name);
                     break;
             }
             names.push(name);
         }
 
-        // let response = yield ctx.requestAsync({
-        //     method: "GET",
-        //     url: URI.joinPaths('/_api/web/RootFolder/').href(),
-        // });
-
-        // if (response.body.error) {
-        //     this.log(response.body.error.message.value);
-        // }
-        //this.dir(filesAndFolders);
         this.log(columnify(names));
         return filesAndFolders;
-        // this.dir(response.body.d);
-        // return response.body.d;
     });
 
     return {
