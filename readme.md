@@ -130,6 +130,12 @@ spoApi.addJavaScriptLink(spoContext, {
 
 With the spo-shell api, you can automate SPO administration within Gulp tasks, for example, with your SharePoint Framework project.
 
+#### What if I want to run some commands as part of a Gulp task?
+
+Excellent, I'm glad you're on the same page. Good developers use good automation tools.
+
+_insert code sample with a couple gulp tasks_
+
 ## Contents
 
 - [Introduction](#introduction)
