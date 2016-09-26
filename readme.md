@@ -236,6 +236,11 @@ _TODO_
 
 - Get-SPOListByTitle
 
+#### Properties
+
+- Get-SPOAllPropertyBagValues
+- Set-SPOPropertyBagValue
+
 #### Site Collections
 
 - Get-SPOSite

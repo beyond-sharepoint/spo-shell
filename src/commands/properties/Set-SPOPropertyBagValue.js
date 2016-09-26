@@ -54,11 +54,8 @@ const setPropertyBagValue = (function () {
             case "Web":
                 templateValues.scope = "Web";
                 break;
-            case "Site":
-                templateValues.scope = "Site";
-                break;
             default:
-                throw Error("Scope argument must be either Web or Site");
+                throw Error("Scope argument must be Web.");
         }
 
         requestOptions.body = mustache.render(requestTemplate, templateValues);
@@ -98,7 +95,7 @@ module.exports = function (vorpal, context) {
         .command('Set-SPOPropertyBagValue')
         .option('-k, --Key <key>', 'Key of the Property Bag Property')
         .option('-v, --Value <value>', 'Value of the Property Bag Property')
-        .option('-s, --Scope [scope]', 'Defines what object that property bag will be set on. Default is web.', ['Web', 'Site'])
+        .option('-s, --Scope [scope]', 'Defines what object the property bag value will be set on. Default is web.', ['Web'])
         .types({
             string: ['k', 'Key']
         })
@@ -109,12 +106,11 @@ module.exports = function (vorpal, context) {
 
             switch (args.options.Scope) {
                 case "Web":
-                case "Site":
                 case undefined:
                 case null:
                     break;
                 default:
-                    return "Scope must be either 'Site' or 'Web'";
+                    return "Scope must be 'Web' (for now)";
             }
             return true;
         })

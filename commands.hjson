@@ -21,6 +21,7 @@
         //Folders
         "folders/Get-SPOFolderByServerRelativeUrl",
         //Properties
+        "properties/Get-SPOAllPropertyBagValues",
         "properties/Set-SPOPropertyBagValue",
         //Lists
         "lists/Get-SPOListByTitle",
