@@ -8,6 +8,7 @@ const _ = require("lodash");
 const mustache = require("mustache");
 
 const interfacer = require('./../../util/interfacer');
+const sanitize = require('./../../util/sanitize');
 
 const requestTemplate = `<Request AddExpandoFieldTypeSuffix="true" SchemaVersion="15.0.0.0" LibraryVersion="16.0.0.0" ApplicationName=".NET Library" xmlns="http://schemas.microsoft.com/sharepoint/clientquery/2009">
         <Actions>
@@ -16,8 +17,8 @@ const requestTemplate = `<Request AddExpandoFieldTypeSuffix="true" SchemaVersion
             <ObjectPath Id="6" ObjectPathId="5" />
             <Method Name="SetFieldValue" Id="7" ObjectPathId="5">
                 <Parameters>
-                    <Parameter Type="String">{{key}}</Parameter>
-                    <Parameter Type="String">{{value}}</Parameter>
+                    <Parameter Type="String">{{key}}></Parameter>
+                    <Parameter Type="String">{{value}}></Parameter>
                 </Parameters>
             </Method>
             <Method Name="Update" Id="8" ObjectPathId="3" />
@@ -34,19 +35,16 @@ const setPropertyBagValue = (function () {
         const self = this;
         options = options || {};
         options.Scope = options.Scope || "Web";
-        options.Sequence = options.Sequence || 0;
 
         let templateValues = {
-                key: options.Key,
-                value: options.Value
+                key: sanitize(options.Key),
+                value: sanitize(options.Value)
         };
 
         let requestOptions = {
             method: "POST",
             headers: {
-                "Content-Type": "text/xml",
-                "X-RequestForceAuthentication": true,
-                "Host": "baristalabs.sharepoint.com"
+                "Content-Type": "text/xml"
             },
             uri: URI.joinPaths('/_vti_bin/client.svc/ProcessQuery').href(),
             json: false
