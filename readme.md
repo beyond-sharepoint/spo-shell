@@ -17,7 +17,10 @@ spo:/$
 ```
 And start working with SharePoint Online on your terms!
 
-_insert snazzy gif_
+<h1 align="center">
+	<img width="800" src="https://raw.githubusercontent.com/beyond-sharepoint/spo-shell/master/SPO-Shell-Walkthrough.gif" alt="spo-shell">
+</h1>
+
 
 ### _Where have you been all my life, spo-shell???_
 
