@@ -9,6 +9,7 @@ const fs = require("fs");
 const progress = require("request-progress");
 const Gauge = require("gauge");
 
+const spoAutocomplete = require('./../../util/spoAutocomplete');
 const interfacer = require('./../../util/interfacer');
 
 const downloadFile = (function () {
@@ -60,7 +61,7 @@ const downloadFile = (function () {
 
         try {
             let request = yield waitPromise;
-            this.dir(request);
+            
             switch (request.response.statusCode) {
                 case 200:
                     this.log(`Done! ${request.response.headers['content-length']} bytes written to ${localFilename}`);
@@ -92,6 +93,11 @@ module.exports = function (vorpal, context) {
     vorpal
         .command('Download-SPOFile <fileUrl> [localFilename]', 'Downloads the file at the specified url')
         .alias('dl')
+        .autocomplete({
+            data: function() {
+                return spoAutocomplete(vorpal.spContext, { includeFiles: true, includeFolders: false });
+            }
+        })
         .action(function (args, callback) {
             interfacer.call(this, {
                 command: downloadFile,
