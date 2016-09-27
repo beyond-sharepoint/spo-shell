@@ -24,7 +24,7 @@ const downloadFile = (function () {
         siteRelativeFileUrl = ctx.getPathRelativeToCurrent(siteRelativeFileUrl);
 
         if (!localFilename) {
-            localFilename = siteRelativeFileUrl.substring(siteRelativeFileUrl.lastIndexOf('/') > -1 ? siteRelativeFileUrl.lastIndexOf('/') + 1 : 0);
+            localFilename = siteRelativeFileUrl.substring(siteRelativeFileUrl.lastIndexOf(path.sep) > -1 ? siteRelativeFileUrl.lastIndexOf(path.sep) + 1 : 0);
         }
 
         let localFilePath = path.join(process.cwd(), localFilename);
@@ -42,7 +42,6 @@ const downloadFile = (function () {
 
         let waitPromise = new Promise(function (resolve, reject) {
             let request = ctx.request(opts);
-            let targetStream = fs.createWriteStream(localFilePath);
             progress(request, {
                 throttle: 250
             })
@@ -57,12 +56,12 @@ const downloadFile = (function () {
                     gauge.disable();
                     resolve(request);
                 })
-                .pipe(targetStream);
+                .pipe(fs.createWriteStream(localFilePath));
         });
 
         try {
             let request = yield waitPromise;
-
+            
             switch (request.response.statusCode) {
                 case 200:
                     this.log(`Done! ${request.response.headers['content-length']} bytes written to ${localFilename}`);

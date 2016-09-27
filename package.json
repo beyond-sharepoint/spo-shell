@@ -1,6 +1,6 @@
 {
   "name": "@beyond-sharepoint/spo-shell",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Cross-Platform Command Line Utility for SharePoint Online",
   "main": "./lib/index.js",
   "bin": {
