@@ -7,6 +7,7 @@ require("bluebird-co");
 
 const _ = require("lodash");
 
+const spoAutocomplete = require('./../util/spoAutocomplete');
 const delimiter = require('./../delimiter');
 const interfacer = require('./../util/interfacer');
 
@@ -44,7 +45,7 @@ const rmdir = (function () {
                 case 404:
                 case 500:
                     let tmpDir = ctx.getPathRelativeToCurrent(file);
-                    this.log(`rmdir: ${tmpDir}: No such file or directory`);
+                    this.log(`rm: ${tmpDir}: No such file or directory`);
                     break;
                 case 200:
                     //Success, do nothing.
@@ -78,6 +79,11 @@ module.exports = function (vorpal, context) {
     //Define the command.
     vorpal
         .command('rm [files...]')
+        .autocomplete({
+            data: function() {
+                return spoAutocomplete(vorpal.spContext);
+            }
+        })
         .option("-f, --Force", "Ignore nonexistant files, and never prompt before removing.")
         .action(function (args, callback) {
             interfacer.call(this, {

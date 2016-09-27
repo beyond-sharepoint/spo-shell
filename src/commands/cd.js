@@ -6,6 +6,7 @@ require("bluebird-co");
 
 const _ = require("lodash");
 
+const spoAutocomplete = require('./../util/spoAutocomplete');
 const delimiter = require('./../delimiter');
 const interfacer = require('./../util/interfacer');
 
@@ -54,6 +55,11 @@ module.exports = function (vorpal, context) {
     
     vorpal
         .command('cd [dir]')
+        .autocomplete({
+            data: function() {
+                return spoAutocomplete(vorpal.spContext, { includeFiles: false, includeFolders: true });
+            }
+        })
         .action(function (args, callback) {
             interfacer.call(this, {
                 command: cd,
