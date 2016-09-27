@@ -93,6 +93,7 @@ module.exports = function (vorpal, context) {
                 return spoAutocomplete(vorpal.spContext);
             }
         })
+        .alias('del')
         .option("-f, --Force", "Ignore nonexistant files, and never prompt before removing.")
         .action(function (args, callback) {
             interfacer.call(this, {
