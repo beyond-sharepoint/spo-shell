@@ -17,18 +17,22 @@ const uploadFile = (function () {
 
         let opts = {
             method: "POST",
-            url: URI.joinPaths(`/_api/web/getfolderbyserverrelativeurl('${URI.encode(targetFolderServerRelativeUrl)}')/files/add(overwrite=${options.Overwrite}, url='${URI.encode(targetFilename)}')`).href(),
-            body: fs.createReadStream(localFilePath)
+            url: URI.joinPaths(`/_api/web/getfolderbyserverrelativeurl('${URI.encode(targetFolderServerRelativeUrl)}')/files/add(overwrite=${options.Overwrite}, url='${URI.encode(targetFilename)}')`).href()
         };
 
         var gauge = new Gauge({
             updateInterval: 50
         });
 
+        let self = this;
         gauge.show(targetFilename, 0)
 
         let waitPromise = new Promise(function(resolve, reject) {
-             let result = progress(ctx.request(opts), {
+             let fileBuffer =  fs.readFileSync(localFilePath);
+             var uploadRequest = ctx.request(opts);
+             uploadRequest.body = fileBuffer;
+
+             let result = progress(uploadRequest, {
                  throttle: 250
              })
                 .on('progress', function(state) {
