@@ -31,7 +31,7 @@ const removeJavaScriptLink = (function () {
                 return _.map(scriptLinks, function (scriptLink) {
                     let sl = scriptLink
                     return {
-                        name: `${sl.Name} (${sl.ScriptSrc})`,
+                        name: `${sl.Name} (${sl.ScriptSrc}) [${sl.Sequence}]`,
                         value: sl
                     }
                 });
