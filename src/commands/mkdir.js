@@ -20,9 +20,17 @@ let mkdir = (function () {
 
         let result = yield ctx.requestAsync(opts);
 
-        //Folder created.
-        if (result.statusCode === 200) {
-            return result.body.d;
+        switch (result.statusCode) {
+                case 200:
+                    //Success, do nothing.
+                    return result.body.d;
+                default:
+                    if (result.body && result.body.error) {
+                        this.log(result.body.error.message.value);
+                    } else {
+                        this.dir(result)
+                    }
+                    break;
         }
     });
 
