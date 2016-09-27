@@ -62,6 +62,7 @@ module.exports = function (vorpal, context) {
     
     vorpal
         .command('ls [paths...]', 'list file and directory names, also list file/directory attributes')
+        .alias("dir")
         .action(function (args, callback) {
             interfacer.call(this, {
                 command: ls,

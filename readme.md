@@ -202,7 +202,7 @@ Here's what's currently supported, and is rapidly expanding:
 - curl
 - grep
 - less
-- ls
+- ls (alias: dir)
 - mkdir (alias: md)
 - rm
 - Select-Object (alias: select)

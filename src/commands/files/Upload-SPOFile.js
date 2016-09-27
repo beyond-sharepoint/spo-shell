@@ -54,7 +54,7 @@ const uploadFile = (function () {
 
             switch(request.response.statusCode) {
                 case 200:
-                    this.log(`Done! ${request.headers['content-length']} bytes written to ${targetFilename} at ${targetFolderServerRelativeUrl}`);
+                    this.log(`Done! ${request.headers['content-length']} bytes written to ${targetFolderServerRelativeUrl}/${targetFilename}`);
                     break;
                 case 400:
                     this.log("The specified file already exists in the target folder. Specify the -o option to overwrite the file.");

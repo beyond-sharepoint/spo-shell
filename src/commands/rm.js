@@ -21,13 +21,22 @@ const rmdir = (function () {
         for (let file of files) {
             file = ctx.getPathRelativeToCurrent(file);
             let filePath = path.parse(file);
+            let isFolder = true;
+
+            let getFolderResult = yield ctx.requestAsync({
+                method: "GET",
+                url: URI.joinPaths("/_api/Web/", `GetFolderByServerRelativeUrl('${URI.encode(file)}')/`).href()
+            });
+
+            if (getFolderResult === 404)
+                isFolder = false;
 
             let url;
 
-            if (filePath.base) {
+            if (!isFolder) {
                 url = URI.joinPaths("/_api/Web/", `GetFolderByServerRelativeUrl('${URI.encode(filePath.dir)}')/Files('${URI.encode(filePath.base)}')`).href();
             } else {
-                url = URI.joinPaths("/_api/Web/", `GetFolderByServerRelativeUrl('${URI.encode(targetFolder)}')/`).href();
+                url = URI.joinPaths("/_api/Web/", `GetFolderByServerRelativeUrl('${URI.encode(file)}')/`).href();
             }
 
             let result = yield ctx.requestAsync({
@@ -41,7 +50,7 @@ const rmdir = (function () {
             if (options.Force == true)
                 continue;
 
-            switch(result.statusCode) {
+            switch (result.statusCode) {
                 case 404:
                 case 500:
                     let tmpDir = ctx.getPathRelativeToCurrent(file);
@@ -80,7 +89,7 @@ module.exports = function (vorpal, context) {
     vorpal
         .command('rm [files...]')
         .autocomplete({
-            data: function() {
+            data: function () {
                 return spoAutocomplete(vorpal.spContext);
             }
         })
