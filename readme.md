@@ -204,7 +204,7 @@ Here's what's currently supported, and is rapidly expanding:
 - less
 - ls
 - mkdir (alias: md)
-- rmdir (alias: rd)
+- rm
 - Select-Object (alias: select)
 
 #### Apps
