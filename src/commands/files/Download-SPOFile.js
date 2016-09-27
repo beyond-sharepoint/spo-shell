@@ -42,6 +42,7 @@ const downloadFile = (function () {
 
         let waitPromise = new Promise(function (resolve, reject) {
             let request = ctx.request(opts);
+            let targetStream = fs.createWriteStream(localFilePath);
             progress(request, {
                 throttle: 250
             })
@@ -56,12 +57,12 @@ const downloadFile = (function () {
                     gauge.disable();
                     resolve(request);
                 })
-                .pipe(fs.createWriteStream(localFilePath));
+                .pipe(targetStream);
         });
 
         try {
             let request = yield waitPromise;
-            
+
             switch (request.response.statusCode) {
                 case 200:
                     this.log(`Done! ${request.response.headers['content-length']} bytes written to ${localFilename}`);
