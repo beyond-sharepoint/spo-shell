@@ -260,9 +260,11 @@ _TODO_
 
 In interactive mode, spo-shell can read the SharePoint URL, Username and Password through environment variables.
 
+```
 spo-shell_tenanturl: URL to the SPO Tenant
 spo-shell_username: SPO Username
 spo-shell_password: SPO Password
+```
 
 If a file named .env file exists in the installation folder, spo-shell will use those settings.
 
