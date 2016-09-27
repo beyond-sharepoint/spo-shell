@@ -15,7 +15,7 @@ module.exports = function (ctx, options) {
         let currentPath = ctx.currentPath;
         let promises = [];
 
-        if (options.ncludeFiles) {
+        if (options.includeFiles) {
             let filesPromise = ctx.requestAsync({
                 method: "GET",
                 url: URI.joinPaths(`_api/web/GetFolderByServerRelativeUrl('${currentPath}')/Files`).href()
